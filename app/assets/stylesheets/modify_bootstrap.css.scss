@@ -1,3 +1,10 @@
-.navbar-inner{
-  @include border-radius(0px);
+.navbar{
+  .brand{
+    padding: 8px 20px 4px 20px;
+    color: #fff;
+    font-weight: bold;
+  }
+  .navbar-inner{
+    @include border-radius(0px);
+  }
 }

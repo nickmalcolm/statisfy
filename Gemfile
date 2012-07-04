@@ -16,6 +16,7 @@ group :assets do
 end
 
 gem 'jquery-rails'
+gem 'shopify_app'
 
 group :test do
   gem 'factory_girl_rails'

@@ -11,6 +11,11 @@ end
 
 module Statisfy
   class Application < Rails::Application
+    
+    # Shopify API connection credentials:
+    config.shopify.api_key = "312eb597225937667ff1febf1a3b77ec"
+    config.shopify.secret = "99a125b5de79d3f957464e2f9573cab0"
+    
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

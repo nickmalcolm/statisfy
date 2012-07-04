@@ -12,9 +12,9 @@
   <div class="navbar-inner">
     <div class="container">
       
-      <a class="brand" href="#">
+      <%= link_to root_url, class: "brand" do %>
         <i class="icon-bar-chart icon-large"></i> <span class="orbitron">statisfy</span>
-      </a>
+      <% end %>
       
       <ul class="nav pull-right">
         <li class="dropdown">
@@ -24,8 +24,8 @@
           </a>
           <div class="row dropdown-menu log-in">
             <div class="span3">
-              <%= form_tag "" do |f| %>
-                <%= text_field_tag "domain", nil, placeholder: "your-store.myshopify.com", class: "pull-left" %>
+              <%= form_tag "/login/authenticate" do |f| %>
+                <%= text_field_tag "shop", nil, placeholder: "Your Store URL", class: "pull-left" %>
                 <%= button_tag class: "btn pull-right" do %>
                   <i class="icon-caret-right"></i>
                 <% end %>

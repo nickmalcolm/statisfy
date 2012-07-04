@@ -12,6 +12,7 @@ group :assets do
   gem 'font-awesome-sass-rails'
   gem 'simple_form'
   gem 'bootstrap-sass'
+  gem 'bourbon'
 end
 
 gem 'jquery-rails'

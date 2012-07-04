@@ -1,10 +1,20 @@
+$headingsFontFamily: "orbitron";
+$navbarBackground: darken($dark_blue, 10%);
+$navbarBackgroundHighlight: $dark_blue;
+@import "bootstrap";
+
 .navbar{
+
   .brand{
     padding: 8px 20px 4px 20px;
     color: #fff;
-    font-weight: bold;
   }
   .navbar-inner{
     @include border-radius(0px);
   }
+}
+
+h1{
+  font-size: 40px;
+  line-height: 50px;
 }

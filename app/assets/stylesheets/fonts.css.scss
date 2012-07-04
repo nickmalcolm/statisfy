@@ -1,0 +1,14 @@
+@include font-face(orbitron, asset_path('orbitron/orbitron-light-webfont', font), 300);
+@include font-face(orbitron, asset_path('orbitron/orbitron-medium-webfont', font), 400);
+
+.orbitron{
+  font-family: "orbitron";
+}
+h1.orbitron{
+  position: relative;
+  top: 0.15em;
+}
+.brand .orbitron{
+  position: relative;
+  top: 3px;
+}

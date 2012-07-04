@@ -17,7 +17,22 @@
       </a>
       
       <ul class="nav pull-right">
-        <li><a href="#"><i class="icon-off icon-large"></i> Log In</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Sign Up or Log In
+            <b class="caret"></b>
+          </a>
+          <div class="row dropdown-menu log-in">
+            <div class="span3">
+              <%= form_tag "" do |f| %>
+                <%= text_field_tag "domain", nil, placeholder: "your-store.myshopify.com", class: "pull-left" %>
+                <%= button_tag class: "btn pull-right" do %>
+                  <i class="icon-caret-right"></i>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </li>
       </ul>
       
     </div>

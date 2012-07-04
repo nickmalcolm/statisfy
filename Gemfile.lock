@@ -50,6 +50,9 @@ GEM
       railties (>= 3.0.0)
     faker (1.0.1)
       i18n (~> 0.4)
+    font-awesome-sass-rails (2.0.0.0)
+      railties (>= 3.1.1)
+      sass-rails (>= 3.1.1)
     hike (1.2.1)
     i18n (0.6.0)
     journey (1.0.4)
@@ -124,6 +127,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   factory_girl_rails
   faker
+  font-awesome-sass-rails
   jquery-rails
   rails (= 3.2.3)
   sass-rails (~> 3.2.3)

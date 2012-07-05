@@ -11,6 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20120705065334) do
+
+  create_table "shops", :force => true do |t|
+    t.integer  "shopify_id"
+    t.string   "country"
+    t.datetime "shopify_created_at"
+    t.string   "domain"
+    t.string   "email"
+    t.string   "name"
+    t.string   "currency"
+    t.string   "timezone"
+    t.string   "shop_owner"
+    t.string   "plan_name"
+    t.string   "myshopify_domain",   :null => false
+    t.string   "access_token"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
 
 end

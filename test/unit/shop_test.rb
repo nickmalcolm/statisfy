@@ -13,4 +13,9 @@ class ShopTest < ActiveSupport::TestCase
     assert FactoryGirl.build(:shop, myshopify_domain: "").invalid? , "Should be invalid with blank myshopify_domain"
   end
   
+  test "shopify_domain must be unique" do
+    FactoryGirl.create(:shop, myshopify_domain: "test.myshopify.com")
+    assert FactoryGirl.build(:shop, myshopify_domain: "test.myshopify.com").invalid?
+  end
+  
 end

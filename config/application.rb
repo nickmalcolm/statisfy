@@ -16,6 +16,8 @@ module Statisfy
     config.shopify.api_key = "312eb597225937667ff1febf1a3b77ec"
     config.shopify.secret = "99a125b5de79d3f957464e2f9573cab0"
     
+    config.assets.initialize_on_precompile = false
+    
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

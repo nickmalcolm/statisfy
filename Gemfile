@@ -18,6 +18,8 @@ gem 'simple_form'
 gem 'jquery-rails'
 gem 'shopify_app'
 
+gem 'newrelic_rpm'
+
 group :test do
   gem 'factory_girl_rails'
   gem 'faker'

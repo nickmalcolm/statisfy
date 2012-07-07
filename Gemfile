@@ -10,11 +10,11 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'font-awesome-sass-rails'
-  gem 'simple_form'
   gem 'bootstrap-sass'
   gem 'bourbon'
 end
 
+gem 'simple_form'
 gem 'jquery-rails'
 gem 'shopify_app'
 

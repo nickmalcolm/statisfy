@@ -34,13 +34,20 @@ class LoginControllerTest < ActionController::TestCase
     assert shopify_session.url = "#{@name}.myshopify.com"
   end
   
-  test "finalize creates shop" do
+  test "finalize creates shop with access token" do
+    #Stub out the ShopifyAPI
+    session = mock()
+    session.stubs(:url).returns("#{@name}.myshopify.com")
+    session.stubs(:token).returns("123")
+    ShopifyAPI::Session.expects(:new).once.with(@name, "ABC").returns(session)
+    
     assert_difference "Shop.count" do
       @request.env['omniauth.auth'] = {'credentials' => {'token' => "ABC"}}
       get :finalize, shop: @name
     end
     shop = Shop.last
     assert_equal "#{@name}.myshopify.com", shop.myshopify_domain
+    assert_equal "123", shop.access_token
   end
   
   test "finalize doesn't duplicate existing shop" do

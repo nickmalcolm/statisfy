@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 gem 'thin'
 gem 'rails', '3.2.3'
 gem 'pg'
+gem 'resque'
+gem 'newrelic_rpm'
 
 
 group :assets do
@@ -17,8 +19,6 @@ end
 gem 'simple_form'
 gem 'jquery-rails'
 gem 'shopify_app'
-
-gem 'newrelic_rpm'
 
 group :test do
   gem 'factory_girl_rails'

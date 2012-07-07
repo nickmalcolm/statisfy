@@ -18,7 +18,10 @@ class LoginController < ApplicationController
   def finalize
     if response = request.env['omniauth.auth']
       sess = ShopifyAPI::Session.new(params['shop'], response['credentials']['token'])
-      session[:shopify] = sess        
+      session[:shopify] = sess
+      
+      Shop.find_or_create_by_myshopify_domain(sess.url, access_token: sess.token)
+             
       flash[:notice] = "Logged in"
       redirect_to return_address
       session[:return_to] = nil

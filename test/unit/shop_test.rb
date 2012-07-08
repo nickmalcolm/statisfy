@@ -76,4 +76,10 @@ class ShopTest < ActiveSupport::TestCase
     assert_equal Time.zone.parse(attributes[:created_at]), shop.shopify_created_at
   end
   
+  test "async_update_from_shopify queues Resque job" do
+    shop = FactoryGirl.create(:shop)
+    Resque.expects(:enqueue).once.with(Sync, shop.id)
+    shop.async_update_from_shopify
+  end
+  
 end

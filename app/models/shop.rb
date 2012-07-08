@@ -26,5 +26,9 @@ class Shop < ActiveRecord::Base
       self.save!
     end
   end
+  
+  def async_update_from_shopify
+    Resque.enqueue(Sync, self.id)
+  end
 
 end 

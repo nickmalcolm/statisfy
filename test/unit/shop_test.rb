@@ -78,7 +78,7 @@ class ShopTest < ActiveSupport::TestCase
   
   test "async_update_from_shopify queues Resque job" do
     shop = FactoryGirl.create(:shop)
-    Resque.expects(:enqueue).once.with(Sync::Shop, shop.id)
+    Resque.expects(:enqueue).once.with(Sync::UpdateShop, shop.id)
     shop.async_update_from_shopify
   end
   

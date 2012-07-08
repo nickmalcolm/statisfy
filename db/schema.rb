@@ -11,7 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120705065334) do
+ActiveRecord::Schema.define(:version => 20120708013212) do
+
+  create_table "orders", :force => true do |t|
+    t.integer  "shopify_id"
+    t.string   "shipping_country_code"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
 
   create_table "shops", :force => true do |t|
     t.integer  "shopify_id"

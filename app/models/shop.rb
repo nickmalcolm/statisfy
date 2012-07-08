@@ -9,4 +9,22 @@ class Shop < ActiveRecord::Base
     ShopifyAPI::Base.activate_session(session)
   end
   
-end
+  def with_shopify_session
+    shopify_session
+    yield if block_given?
+    ShopifyAPI::Base.clear_session
+  end
+  
+  def update_from_shopify
+    with_shopify_session do
+      shopify_version = ShopifyAPI::Shop.current
+      attrs = %w(domain country email name currency timezone shop_owner plan_name myshopify_domain)
+      attrs.each do |attribute|
+        self.send("#{attribute}=", shopify_version.send("#{attribute}"))
+      end
+      self.shopify_created_at = shopify_version.created_at
+      self.save!
+    end
+  end
+
+end 

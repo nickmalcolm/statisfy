@@ -46,4 +46,34 @@ class ShopTest < ActiveSupport::TestCase
     end
   end
   
+  test "update_from_shopify saves ShopifyAPI attributes to Shop" do
+    attributes = {
+      country: "US",
+      email: "steve@apple.com",
+      name: "Apple Computers",
+      currency: "USD",
+      timezone: "(GMT-05:00) Eastern Time (US & Canada)",
+      shop_owner: "Steve Jobs",
+      plan_name: "enterprise",
+      domain: "shop.apple.com",
+      myshopify_domain: "apple.myshopify.com",
+      created_at: "2007-12-31T19:00:00-05:00"
+    }
+    
+    shopify_shop_stub = mock()
+    attributes.each do |attribute, value|
+      shopify_shop_stub.stubs(attribute).returns(value)
+    end
+    ShopifyAPI::Shop.expects(:current).once.returns(shopify_shop_stub)
+    
+    shop = FactoryGirl.create(:shop, access_token: "ABC")
+    shop.update_from_shopify
+    shop.reload
+    
+    %w(country email name currency timezone shop_owner plan_name domain myshopify_domain).each do |attribute|
+      assert_equal attributes[attribute.to_sym], shop.send("#{attribute}"), "#{attribute} incorrect"
+    end
+    assert_equal Time.zone.parse(attributes[:created_at]), shop.shopify_created_at
+  end
+  
 end

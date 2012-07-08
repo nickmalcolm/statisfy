@@ -35,6 +35,7 @@ module Sync
             Order.create do |order|
               order.shopify_id = shopify_order.id
               order.shipping_country_code = shopify_order.shipping_address.country_code
+              order.shop_id = shop_id
             end
           
           end

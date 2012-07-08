@@ -62,8 +62,8 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
   end
   
   test "fetch creates orders returned by Shopify" do
-    ShopifyAPI::Order.expects(:count).once.returns(1)
-    ShopifyAPI.expects(:credit_left).once.returns(500)
+    ShopifyAPI::Order.stubs(:count).returns(1)
+    ShopifyAPI.stubs(:credit_left).returns(500)
     
     mock_order = stub()
     mock_order.expects(:id).once.returns(1234)
@@ -71,7 +71,7 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     mock_shipping_address.expects(:country_code).once.returns("NZ")
     mock_order.expects(:shipping_address).once.returns(mock_shipping_address)
     
-    ShopifyAPI::Order.expects(:find).returns([mock_order])
+    ShopifyAPI::Order.stubs(:find).returns([mock_order])
     
     assert_difference "Order.count" do
       Sync::FetchShopOrders.perform(@shop_id)
@@ -80,6 +80,7 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     order = Order.last
     assert_equal 1234, order.shopify_id
     assert_equal "NZ", order.shipping_country_code
+    assert_equal Shop.find(@shop_id), order.shop
   end
   
 end

@@ -15,4 +15,8 @@ class OrderTest < ActiveSupport::TestCase
     assert FactoryGirl.build(:order, shopify_id: 1).invalid?
   end
   
+  test "requires associated shop" do
+    assert FactoryGirl.build(:order, shop: nil).invalid?
+  end
+  
 end

@@ -5,6 +5,7 @@ FactoryGirl.define do
   end
   
   factory :order do
+    shop
     sequence :shopify_id
   end
 end

@@ -1,4 +1,5 @@
 class Shop < ActiveRecord::Base
+  has_many :orders
   
   validates :myshopify_domain, presence: {allow_blank: false}, uniqueness: true
   

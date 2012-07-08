@@ -3,12 +3,15 @@ module Sync
     SHOPIFY_PAGE_LIMIT = 250
     @queue = :sync
     
+    # Will fetch all unsynced Orders for a Shop. Restricted by the ShopifyAPI limits.
+    # 
     def self.perform(shop_id)
       raise ArgumentError, "Shop #{shop_id} does not exist" unless (shop = Shop.find_by_id(shop_id))
     
       shop.shopify_session
+      last_synced_order_id = shop.orders.maximum(:shopify_id)
       
-      count = ShopifyAPI::Order.count
+      count = ShopifyAPI::Order.count({since_id: last_synced_order_id})
       credit_left = ShopifyAPI.credit_left # Keep track of credit locally to save on API calls
       
       if count > 0
@@ -27,7 +30,8 @@ module Sync
               params: {
                 limit: SHOPIFY_PAGE_LIMIT, 
                 page: page,
-                fields: "id,shipping_address"
+                fields: "id,shipping_address",
+                since_id: last_synced_order_id
               })
           
           orders.each do |shopify_order|

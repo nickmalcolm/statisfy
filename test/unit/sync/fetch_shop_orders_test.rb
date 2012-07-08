@@ -2,7 +2,7 @@ require 'test_helper'
 class FetchShopOrdersTest < ActiveSupport::TestCase
   
   setup do
-    @shop_id = Factory(:shop, access_token: "ABC").id
+    @shop = Factory(:shop, access_token: "ABC")
   end
   
   test "perform raises ArgumentError if invalid shop id is given" do
@@ -20,11 +20,12 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
       params: {
         limit: 250,
         page: 1,
-        fields: "id,shipping_address"
+        fields: "id,shipping_address",
+        since_id: nil
       }
     ).returns([])
     
-    Sync::FetchShopOrders.perform(@shop_id)
+    Sync::FetchShopOrders.perform(@shop.id)
   end
   
   test "can't fetch any orders with 0 credit_left" do
@@ -33,7 +34,7 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     
     ShopifyAPI::Order.expects(:find).never
     
-    Sync::FetchShopOrders.perform(@shop_id)
+    Sync::FetchShopOrders.perform(@shop.id)
   end
   
   test "can fetch 500 orders with 2 credit_left" do
@@ -42,7 +43,7 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     
     ShopifyAPI::Order.expects(:find).twice.returns([])
     
-    Sync::FetchShopOrders.perform(@shop_id)
+    Sync::FetchShopOrders.perform(@shop.id)
   end
   
   test "can fetch oldest 250/500 orders with 1 credit_left" do
@@ -54,33 +55,56 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
       params: {
         limit: 250,
         page: 2,
-        fields: "id,shipping_address"
+        fields: "id,shipping_address",
+        since_id: nil
       }
     ).returns([])
     
-    Sync::FetchShopOrders.perform(@shop_id)
+    Sync::FetchShopOrders.perform(@shop.id)
   end
   
   test "fetch creates orders returned by Shopify" do
     ShopifyAPI::Order.stubs(:count).returns(1)
     ShopifyAPI.stubs(:credit_left).returns(500)
     
-    mock_order = stub()
+    mock_order = mock()
     mock_order.expects(:id).once.returns(1234)
-    mock_shipping_address = stub()
+    mock_shipping_address = mock()
     mock_shipping_address.expects(:country_code).once.returns("NZ")
     mock_order.expects(:shipping_address).once.returns(mock_shipping_address)
     
     ShopifyAPI::Order.stubs(:find).returns([mock_order])
     
     assert_difference "Order.count" do
-      Sync::FetchShopOrders.perform(@shop_id)
+      Sync::FetchShopOrders.perform(@shop.id)
     end
     
     order = Order.last
     assert_equal 1234, order.shopify_id
     assert_equal "NZ", order.shipping_country_code
-    assert_equal Shop.find(@shop_id), order.shop
+    assert_equal @shop, order.shop
+  end
+
+  test "fetch uses since_id if shop has existing orders" do
+    orders = mock()
+    orders.expects(:maximum).with(:shopify_id).once.returns(1234)
+    @shop.expects(:orders).once.returns(orders)
+    Shop.expects(:find_by_id).returns(@shop)
+
+    ShopifyAPI::Order.expects(:count).with({since_id: 1234}).once.returns(1)
+    ShopifyAPI.stubs(:credit_left).returns(500)
+
+    ShopifyAPI::Order.expects(:find).once.with(
+      :all,
+      params: {
+        limit: 250,
+        page: 1,
+        fields: "id,shipping_address",
+        since_id: 1234
+      }
+    ).returns([])
+
+    Sync::FetchShopOrders.perform(@shop.id)
   end
   
 end

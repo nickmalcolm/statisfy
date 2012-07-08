@@ -1,4 +1,6 @@
 Statisfy::Application.routes.draw do
+  mount Resque::Server.new, :at => "/resque"
+  
   root to: "home#index"
   
   match 'auth/shopify/callback'  => 'login#finalize'

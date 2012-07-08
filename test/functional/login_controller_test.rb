@@ -4,6 +4,7 @@ class LoginControllerTest < ActionController::TestCase
   
   setup do
     @name = "swift-runte5994"
+    Resque.stubs(:enqueue)
   end
   
   test "should get index" do
@@ -48,6 +49,15 @@ class LoginControllerTest < ActionController::TestCase
     shop = Shop.last
     assert_equal "#{@name}.myshopify.com", shop.myshopify_domain
     assert_equal "123", shop.access_token
+  end
+  
+  test "finalize starts async shop update" do
+    shop = mock()
+    shop.expects(:async_update_from_shopify).once
+    Shop.expects(:find_or_create_by_myshopify_domain).returns(shop)
+    
+    @request.env['omniauth.auth'] = {'credentials' => {'token' => "ABC"}}
+    get :finalize, shop: @name
   end
   
   test "finalize doesn't duplicate existing shop" do

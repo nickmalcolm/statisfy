@@ -20,9 +20,10 @@ class LoginController < ApplicationController
       sess = ShopifyAPI::Session.new(params['shop'], response['credentials']['token'])
       session[:shopify] = sess
       
-      Shop.find_or_create_by_myshopify_domain(sess.url) do |s|
+      shop = Shop.find_or_create_by_myshopify_domain(sess.url) do |s|
         s.access_token = sess.token
       end
+      shop.async_update_from_shopify
              
       flash[:notice] = "Logged in"
       redirect_to return_address

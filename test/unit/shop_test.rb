@@ -18,6 +18,31 @@ class ShopTest < ActiveSupport::TestCase
     assert FactoryGirl.build(:shop, myshopify_domain: "test.myshopify.com").invalid?
   end
   
+  test "has_current_shopify_session? is true if Session matches domain and token" do
+    # Make shopify_session believe there is a current ShopifyAPI::Base
+    ShopifyAPI::Base.expects(:site).once.returns("https://test.myshopify.com/admin")
+    ShopifyAPI::Base.expects(:headers).once.returns({'X-Shopify-Access-Token' => "ABC"})
+    
+    shop = FactoryGirl.create(:shop, myshopify_domain: "test.myshopify.com", access_token: "ABC")
+    assert shop.has_current_shopify_session?
+  end
+
+  test "has_current_shopify_session? is false with different shop domain" do
+    ShopifyAPI::Base.expects(:site).once.returns("https://other.myshopify.com/admin")
+    ShopifyAPI::Base.expects(:headers).never # Won't evaluate second half of boolean statement
+
+    shop = FactoryGirl.create(:shop, myshopify_domain: "test.myshopify.com", access_token: "ABC")
+    assert !shop.has_current_shopify_session?
+  end
+  
+  test "has_current_shopify_session? is false with stale token" do
+    ShopifyAPI::Base.expects(:site).once.returns("https://test.myshopify.com/admin")
+    ShopifyAPI::Base.expects(:headers).once.returns({'X-Shopify-Access-Token' => "stale"})
+    
+    shop = FactoryGirl.create(:shop, myshopify_domain: "test.myshopify.com", access_token: "ABC")
+    assert !shop.has_current_shopify_session?
+  end
+  
   test "shopify_session without access token raises ArgumentError" do
     shop = FactoryGirl.create(:shop)
     assert_raises ArgumentError do
@@ -26,6 +51,7 @@ class ShopTest < ActiveSupport::TestCase
   end
   
   test "shopify_session with access token creates and activates a ShopifyAPI::Session" do
+    #Stub out a 'valid' session
     valid_session = mock()
     valid_session.stubs(:valid?).returns(true)
     ShopifyAPI::Session.expects(:new).with("test.myshopify.com", "ABC").once.returns(valid_session)
@@ -33,6 +59,14 @@ class ShopTest < ActiveSupport::TestCase
     
     shop = FactoryGirl.create(:shop, myshopify_domain: "test.myshopify.com", access_token: "ABC")
     shop.shopify_session
+  end
+  
+  test "shopify_session does not create new ShopifyAPI::Session if has_current_shopify_session?" do
+    shop = FactoryGirl.create(:shop, myshopify_domain: "test.myshopify.com", access_token: "ABC")
+    shop.expects(:has_current_shopify_session?).once.returns(true)
+    shop.shopify_session
+    
+    assert_nil ShopifyAPI::Base.site, "Base.site should be nil when there is no ShopifyAPI::Session"
   end
   
   test "invalid ShopifyAPI::Session raises Argument Error" do
@@ -64,6 +98,7 @@ class ShopTest < ActiveSupport::TestCase
     attributes.each do |attribute, value|
       shopify_shop_stub.stubs(attribute).returns(value)
     end
+    # Stub out the request and response from an actual Shopify shop
     ShopifyAPI::Shop.expects(:current).once.returns(shopify_shop_stub)
     
     shop = FactoryGirl.create(:shop, access_token: "ABC")

@@ -12,9 +12,9 @@ end
 module Statisfy
   class Application < Rails::Application
     
-    # Shopify API connection credentials:
-    config.shopify.api_key = "312eb597225937667ff1febf1a3b77ec"
-    config.shopify.secret = "99a125b5de79d3f957464e2f9573cab0"
+    # Shopify statisfy-development API connection credentials:
+    config.shopify.api_key = "aed9d5209138f6d5095008105eba441f"
+    config.shopify.secret = "baf2856e405aeb9c4800842ed45ae098"
     
     config.assets.initialize_on_precompile = false
     

@@ -13,4 +13,9 @@ FactoryGirl.define do
     shop
     country_code "NZ"
   end
+  
+  factory :country do
+    name { Faker::Address.country }
+    code { [*('A'..'Z')].sample(3).join }
+  end
 end

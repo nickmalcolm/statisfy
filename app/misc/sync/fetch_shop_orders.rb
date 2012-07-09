@@ -35,17 +35,19 @@ module Sync
               })
           
           orders.each do |shopify_order|
-          
-            Order.create do |order|
-              order.shopify_id = shopify_order.id
-              order.shipping_country_code = shopify_order.shipping_address.country_code
-              order.shop_id = shop_id
-            end
-          
+            self.ingest_order(shopify_order, shop_id)
           end
           
           page -= 1
         end
+      end
+    end
+    
+    def self.ingest_order(shopify_order, shop_id)
+      Order.create do |order|
+        order.shopify_id = shopify_order.id
+        order.shipping_country_code = shopify_order.shipping_address.country_code
+        order.shop_id = shop_id
       end
     end
     

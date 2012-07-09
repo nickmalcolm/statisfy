@@ -62,30 +62,9 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     
     Sync::FetchShopOrders.perform(@shop.id)
   end
-  
-  test "fetch creates orders returned by Shopify" do
-    ShopifyAPI::Order.stubs(:count).returns(1)
-    ShopifyAPI.stubs(:credit_left).returns(500)
-    
-    mock_order = mock()
-    mock_order.expects(:id).once.returns(1234)
-    mock_shipping_address = mock()
-    mock_shipping_address.expects(:country_code).once.returns("NZ")
-    mock_order.expects(:shipping_address).once.returns(mock_shipping_address)
-    
-    ShopifyAPI::Order.stubs(:find).returns([mock_order])
-    
-    assert_difference "Order.count" do
-      Sync::FetchShopOrders.perform(@shop.id)
-    end
-    
-    order = Order.last
-    assert_equal 1234, order.shopify_id
-    assert_equal "NZ", order.shipping_country_code
-    assert_equal @shop, order.shop
-  end
 
   test "fetch uses since_id if shop has existing orders" do
+    # Make shop.orders.maximum(:shopify_id) return 1234
     orders = mock()
     orders.expects(:maximum).with(:shopify_id).once.returns(1234)
     @shop.expects(:orders).once.returns(orders)
@@ -106,5 +85,32 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
 
     Sync::FetchShopOrders.perform(@shop.id)
   end
+  
+  
+  test "fetch calls ingest_order for each Shopify order" do
+    ShopifyAPI::Order.stubs(:count).returns(5)
+    ShopifyAPI.stubs(:credit_left).returns(500)
+    ShopifyAPI::Order.stubs(:find).returns([mock(),mock(),mock(),mock(),mock()])
+    
+    Sync::FetchShopOrders.expects(:ingest_order).times(5)
+    Sync::FetchShopOrders.perform(@shop.id)
+  end
+  
+  test "ingest creates orders returned by Shopify" do
+    mock_order = mock()
+    mock_order.expects(:id).once.returns(1234)
+    mock_shipping_address = mock()
+    mock_shipping_address.expects(:country_code).once.returns("NZ")
+    mock_order.expects(:shipping_address).once.returns(mock_shipping_address)
+    
+    assert_difference "Order.count" do
+      Sync::FetchShopOrders.ingest_order(mock_order, @shop.id)
+    end
+    
+    order = Order.last
+    assert_equal 1234, order.shopify_id
+    assert_equal "NZ", order.shipping_country_code
+    assert_equal @shop, order.shop
+  end  
   
 end

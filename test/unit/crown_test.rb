@@ -10,8 +10,8 @@ class CrownTest < ActiveSupport::TestCase
     assert FactoryGirl.build(:crown, shop: nil).invalid?
   end
   
-  test "requires country code" do
-    assert FactoryGirl.build(:crown, country_code: nil).invalid?
+  test "requires country" do
+    assert FactoryGirl.build(:crown, country: nil).invalid?
   end
   
 end

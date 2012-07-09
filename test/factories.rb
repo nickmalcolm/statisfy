@@ -11,7 +11,7 @@ FactoryGirl.define do
   
   factory :crown do
     shop
-    country_code "NZ"
+    country
   end
   
   factory :country do

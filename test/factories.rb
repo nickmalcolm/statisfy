@@ -8,4 +8,9 @@ FactoryGirl.define do
     shop
     sequence :shopify_id
   end
+  
+  factory :crown do
+    shop
+    country_code "NZ"
+  end
 end

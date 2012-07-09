@@ -5,4 +5,8 @@ require 'mocha'
 
 class ActiveSupport::TestCase
   
+  teardown do
+    ShopifyAPI::Base.clear_session
+  end
+  
 end

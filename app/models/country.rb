@@ -7,4 +7,9 @@ class Country < ActiveRecord::Base
   validates :code, presence: {allow_blank: false}
   
   attr_accessible :name
+  
+  def reigning_crown
+    crowns.reigning.first
+  end
+  
 end

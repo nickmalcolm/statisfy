@@ -5,5 +5,11 @@ class Crown < ActiveRecord::Base
   
   validates :shop, presence: true
   validates :country, presence: true
+  
+  scope :reigning, where(lost_at: nil)
+  
+  def reigns?
+    lost_at.nil?
+  end
     
 end

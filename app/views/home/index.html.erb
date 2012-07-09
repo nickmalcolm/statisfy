@@ -9,9 +9,16 @@
 <div class="marketing row">
   <section role="standings" class="span6">
     <h2><i class="icon-globe icon-large"></i> Global Standings</h2>
-    <ul class="crowns">
-      See yourself here. <%= link_to "Sign up now", login_path %>
+    <ul class="countries">
+      <% @countries.each do |country| %>
+        <%= content_tag_for :li, country, class: country.code do %>
+          <%= "#{country.reigning_crown.shop.name} rules over #{country.name}"%>
+        <% end %>
+      <% end%>
     </ul>
+    <p>
+      See yourself here. <%= link_to "Sign up now", login_path %>
+    </p>
   </section>
   <div class="span6">
     <section class="row">

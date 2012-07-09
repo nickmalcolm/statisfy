@@ -45,9 +45,14 @@ module Sync
     
     def self.ingest_order(shopify_order, shop_id)
       Order.create do |order|
+        
         order.shopify_id = shopify_order.id
-        order.shipping_country_code = shopify_order.shipping_address.country_code
         order.shop_id = shop_id
+        
+        if code = shopify_order.try(:shipping_address).try(:country_code)
+          order.country = Country.find_or_create_by_code(code, name: shopify_order.shipping_address.country)
+        end
+        
       end
     end
     

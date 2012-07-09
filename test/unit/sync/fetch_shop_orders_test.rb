@@ -86,7 +86,6 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     Sync::FetchShopOrders.perform(@shop.id)
   end
   
-  
   test "fetch calls ingest_order for each Shopify order" do
     ShopifyAPI::Order.stubs(:count).returns(5)
     ShopifyAPI.stubs(:credit_left).returns(500)
@@ -96,21 +95,59 @@ class FetchShopOrdersTest < ActiveSupport::TestCase
     Sync::FetchShopOrders.perform(@shop.id)
   end
   
-  test "ingest creates orders returned by Shopify" do
-    mock_order = mock()
-    mock_order.expects(:id).once.returns(1234)
-    mock_shipping_address = mock()
-    mock_shipping_address.expects(:country_code).once.returns("NZ")
-    mock_order.expects(:shipping_address).once.returns(mock_shipping_address)
+end
+class FetchIngestShopOrdersTest < ActiveSupport::TestCase
+  
+  setup do
+    @shop = Factory(:shop, access_token: "ABC")
     
+    @mock_order = mock()
+    @mock_order.stubs(:id).returns(1234)
+    @mock_shipping_address = mock()
+    @mock_shipping_address.stubs(:country_code).returns("NZ")
+    @mock_shipping_address.stubs(:country).returns("New Zealand")
+    @mock_order.stubs(:shipping_address).returns(@mock_shipping_address)
+  end
+  
+  
+  test "ingest creates orders returned by Shopify" do
     assert_difference "Order.count" do
-      Sync::FetchShopOrders.ingest_order(mock_order, @shop.id)
+      Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
     end
     
     order = Order.last
     assert_equal 1234, order.shopify_id
-    assert_equal "NZ", order.shipping_country_code
     assert_equal @shop, order.shop
-  end  
+  end
+  
+  test "ingest associates with existing country" do
+    nz = FactoryGirl.create(:country, name: "New Zealand", code: "NZ")
+    
+    assert_no_difference "Country.count" do
+      Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
+    end
+    
+    order = Order.last
+    assert_equal nz, order.country
+  end
+  
+  test "ingest creates new non-existant country" do
+    assert_difference "Country.count" do
+      Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
+    end
+    country = Country.last
+    assert_equal "NZ", country.code
+    assert_equal "New Zealand", country.name
+    
+    order = Order.last
+    assert_equal country, order.country
+  end
+  
+  test "ingest can handle no shipping address" do
+    @mock_order.stubs(:shipping_address).returns(nil)
+    Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
+    order = Order.last
+    assert_nil order.country
+  end
   
 end

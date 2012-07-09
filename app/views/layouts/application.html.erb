@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>statisfy</title>
+  <title>Statisfy - Your Shopify statistics and rankings</title>
+  <meta name="description" content="Statisfy is a Shopify App which compares your shop against competitors from across the globe. See how well you rank." />
+  
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<div class="navbar">
+<section role="navigation" class="navbar">
   <div class="navbar-inner">
     <div class="container">
       
@@ -37,11 +39,24 @@
       
     </div>
   </div>
-</div>
+</section>
 
-<div class="container">
+<section role="main" class="container">
   <%= yield %>
 </div>
+
+<section role="footer" class="footer">
+  
+  <div class="container">
+    <hr class="soften">
+  </div>
+  <div class="container">
+    <div class="span12">
+      <%= link_to "Terms of Use", "#" %>
+      <%= link_to "Privacy Policy", "#" %>
+    </div>
+  </div>
+</section> 
 
 </body>
 </html>

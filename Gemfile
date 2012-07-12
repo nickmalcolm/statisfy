@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'thin'
+gem 'unicorn'
 gem 'rails', '3.2.3'
 gem 'pg'
 gem 'resque'

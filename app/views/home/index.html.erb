@@ -12,9 +12,18 @@
     <ul class="countries">
       <% @countries.each do |country| %>
         <%= content_tag_for :li, country, class: country.code do %>
-          <%= "#{country.reigning_crown.shop.name} rules over #{country.name}"%>
+          <h3>
+            <%= country.name %>
+          </h3>
+          <ol>
+            <% country.crowns.each do |crown| %>
+              <%= content_tag_for :li, crown do %>
+                <%= link_to "#{crown.shop.name}", "#" %> <%= crown.reigns? ? "reigns" : "was usurped #{time_ago_in_words crown.lost_at} ago" %>.
+              <% end %>
+            <% end %>
+          </ol>
         <% end %>
-      <% end%>
+      <% end %>
     </ul>
     <p>
       See yourself here. <%= link_to "Sign up now", login_path %>

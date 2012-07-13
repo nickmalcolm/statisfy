@@ -1,4 +1,6 @@
-<%= form_tag '/login/authenticate', :class => 'form-search' do %>
-  <%= text_field_tag 'shop', nil, :placeholder => 'Shop URL', :class => 'btn-large' %>
-  <%= submit_tag 'Install', :class => 'btn btn-primary btn-large' %>
-<% end %>
+<div class="row">
+  <%= form_tag '/login/authenticate', :class => 'form-horizontal span6 offset3', :style=> "padding-left: 100px" do %>
+    <%= text_field_tag 'shop', nil, :placeholder => 'Shop URL', :class => 'btn-large' %>
+    <%= submit_tag 'Install', :class => 'btn btn-success' %> or <%= submit_tag 'Log In', :class => 'btn' %>
+  <% end %>
+</div>

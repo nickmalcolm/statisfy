@@ -9,9 +9,15 @@ class Crown < ActiveRecord::Base
   attr_accessible :lost_at
   
   scope :reigning, where(lost_at: nil)
+  scope :lost, where("lost_at IS NOT ?", nil)
   
   def reigns?
     lost_at.nil?
+  end
+  
+  def former_crown
+    crowns = Crown.where("country_id = ? AND id < ?", self.country_id, self.id).order("lost_at DESC")
+    crowns.first
   end
     
 end

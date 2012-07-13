@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="span12 shop_details">
+    <h2 class=""><%= @shop.name %></h2>
+    <p><strong><%= link_to @shop.domain, @shop.domain %></strong></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span6">
+    <h2>Reigns over</h2>
+    <ol class="current_crowns">
+      <% if @reigning.any? %>
+        <% @reigning.each do |crown| %>
+          <li id="crown_<%= crown.id %>">
+            <h4><%= crown.country.name %></h4>
+            <p>
+              <% if old = crown.former_crown %>
+                <%= %w(Beat Defeated Usurped Conquered).sample %> <%= old.shop.name %>
+              <% else %>
+                was first claimed by <%= @shop.name %>
+              <% end %>
+              <%= time_ago_in_words crown.created_at %> ago</p>
+          </li>
+        <% end %>
+      <% else %>
+        <%= @shop.name %> has no crowns yet. Why don't you <%= link_to "buy something", @shop.domain %> from them?
+      <% end %>
+    </ol>
+  </div>
+  
+  <div class="span6">
+    <h3>Former dominions</h3>
+    <ol class="old_crowns">
+      <% if @lost.any? %>
+        <% @lost.each do |crown| %>
+          <li id="crown_<%= crown.id %>">
+            <strong><%= crown.country.name %></strong> was lost <%= time_ago_in_words crown.lost_at %> ago
+          </li>
+        <% end %>
+      <% else %>
+        <p><%= @shop.name %> has never lost a crown.</p>
+      <% end %>
+    </ol>
+  </div>
+</div>

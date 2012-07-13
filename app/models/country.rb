@@ -17,19 +17,24 @@ class Country < ActiveRecord::Base
     
     # Ties don't overthrow
     if shops.count.eql? 1
-      shop = Shop.find_by_id(shops[0].shop_id)
-      
-      # Don't recrown
-      unless shop.eql? reigning_crown.try(:shop)
-        # Dethrone one
-        reigning_crown.update_attributes(lost_at: Time.zone.now) if reigning_crown.present?
-        # Crown another
-        crowns.create! do |c|
-          c.shop = shop
-        end
+      if shop = Shop.find_by_id(shops[0].shop_id)
+        crown(shop)
       end
     end
   end
+  
+  def crown(shop)
+    # Don't recrown
+    unless shop.eql? reigning_crown.try(:shop)
+      # Dethrone one
+      reigning_crown.update_attributes(lost_at: Time.zone.now) if reigning_crown.present?
+      # Crown another
+      crowns.create! do |c|
+        c.shop = shop
+      end
+    end
+  end
+    
   
   def candidates
     Shop.find_by_sql(

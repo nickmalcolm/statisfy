@@ -10,3 +10,5 @@ Resque::Server.use Rack::Auth::Basic do |username, password|
   username == "statisfy.me"
   password == "YcUp2&)h^8j]67H"
 end
+
+Resque.after_fork = Proc.new { ActiveRecord::Base.establish_connection }

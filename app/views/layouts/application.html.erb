@@ -21,18 +21,28 @@
       <ul class="nav pull-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Sign Up or Log In
+            <% if current_shop %>
+              <%= current_shop.name %>
+            <% else %>
+              Sign Up or Log In
+            <% end %>
             <b class="caret"></b>
           </a>
-          <div class="row dropdown-menu log-in">
-            <div class="span3">
-              <%= form_tag "/login/authenticate" do |f| %>
-                <%= text_field_tag "shop", nil, placeholder: "Your Store URL", class: "pull-left" %>
-                <%= button_tag class: "btn pull-right btn-success" do %>
-                  <i class="icon-caret-right"></i>
+          <div class="row dropdown-menu">
+            <% if current_shop %>
+              <div class="span2">
+                <%= link_to "Logout", logout_path %>
+              </div>
+            <% else %>
+              <div class="span3 log-in">
+                <%= form_tag "/login/authenticate" do |f| %>
+                  <%= text_field_tag "shop", nil, placeholder: "Your Store URL", class: "pull-left" %>
+                  <%= button_tag class: "btn pull-right btn-success" do %>
+                    <i class="icon-caret-right"></i>
+                  <% end %>
                 <% end %>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
           </div>
         </li>
       </ul>

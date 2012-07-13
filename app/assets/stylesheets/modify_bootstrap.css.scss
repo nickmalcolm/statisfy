@@ -13,7 +13,7 @@ $navbarBackgroundHighlight: $dark_blue;
     @include border-radius(0px);
   }
   
-  .dropdown-menu.log-in{
+  .dropdown-menu .log-in{
     padding: 20px 20px 20px 0;
     
     input{

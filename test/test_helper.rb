@@ -5,6 +5,12 @@ require 'mocha'
 
 class ActiveSupport::TestCase
   
+  def login_as(shop)
+    sess = mock()
+    sess.stubs(:url).returns(shop.try(:myshopify_domain))
+    session[:shopify] = sess
+  end
+  
   teardown do
     ShopifyAPI::Base.clear_session
   end

@@ -67,5 +67,15 @@ class LoginControllerTest < ActionController::TestCase
       get :finalize, shop: @name
     end
   end
+  
+  test "finalize sets current_shop" do
+    FactoryGirl.create(:shop, myshopify_domain: "#{@name}.myshopify.com")
+    
+    @request.env['omniauth.auth'] = {'credentials' => {'token' => "ABC"}}
+    get :finalize, shop: @name
+    
+    assert_not_nil session[:shopify]
+    assert_equal "#{@name}.myshopify.com", session[:shopify].url
+  end
 
 end

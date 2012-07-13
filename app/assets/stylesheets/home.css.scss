@@ -1,6 +1,6 @@
 .masthead {
   padding-top: 36px;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   text-align: center;
   
   h1{
@@ -26,12 +26,35 @@
 .marketing{
 
   section{
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-top: 40px;
+    margin-bottom: 40px;
   }
   
   p{
     font-size: 16px;
     line-height: 30px;
+  }
+  
+  .signup{
+    background: asset-url("hidden_ranking.jpg", image) no-repeat;
+    height: 415px;
+    text-align: center;
+    .cta{
+      color: #fff;
+      width: 100%;
+      margin-top: 80px;
+      background-color: #eee;
+      background-color: rgba(0,0,0,0.7);
+      float: left;
+      p, h2 {
+        padding: 20px;
+      }
+      h2{
+        padding-bottom: 5px;
+      }
+      a{
+        font-size: 25px;
+      }
+    }
   }
 }

@@ -9,25 +9,31 @@
 <div class="marketing row">
   <section role="standings" class="span6">
     <h2><i class="icon-globe icon-large"></i> Global Standings</h2>
-    <ul class="countries">
-      <% @countries.each do |country| %>
-        <%= content_tag_for :li, country, class: country.code do %>
-          <h3>
-            <%= country.name %>
-          </h3>
-          <ol>
-            <% country.crowns.order("created_at ASC").each do |crown| %>
-              <%= content_tag_for :li, crown do %>
-                <%= link_to "#{crown.shop.name}", crown.shop %> <%= crown.reigns? ? "reigns" : "was usurped #{time_ago_in_words crown.lost_at} ago" %>.
+    <% if current_shop %>
+      <ul class="countries">
+        <% @countries.each do |country| %>
+          <%= content_tag_for :li, country, class: country.code do %>
+            <h3>
+              <%= country.name %>
+            </h3>
+            <ol>
+              <% country.crowns.order("created_at ASC").each do |crown| %>
+                <%= content_tag_for :li, crown do %>
+                  <%= link_to "#{crown.shop.name}", crown.shop %> <%= crown.reigns? ? "reigns" : "was usurped #{time_ago_in_words crown.lost_at} ago" %>.
+                <% end %>
               <% end %>
-            <% end %>
-          </ol>
+            </ol>
+          <% end %>
         <% end %>
-      <% end %>
-    </ul>
-    <p>
-      See yourself here. <%= link_to "Sign up now", login_path %>
-    </p>
+      </ul>
+    <% else %>
+      <div class="signup">
+        <div class="cta">
+          <h2>Where do you stand?</h2>
+          <p><%= link_to "Sign Up for Free", login_path, class: "btn btn-success btn-large open_login" %></p>
+        </div>
+      </div>
+    <% end %>
   </section>
   <div class="span6">
     <section class="row">

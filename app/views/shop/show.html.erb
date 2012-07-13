@@ -1,7 +1,7 @@
 <div class="row">
   <div class="span12 shop_details">
     <h2 class=""><%= @shop.name %></h2>
-    <p><strong><%= link_to @shop.domain, @shop.domain %></strong></p>
+    <p><strong><%= link_to @shop.domain, "http://#{@shop.domain}" %></strong></p>
   </div>
 </div>
 
@@ -19,7 +19,8 @@
               <% else %>
                 was first claimed by <%= @shop.name %>
               <% end %>
-              <%= time_ago_in_words crown.created_at %> ago</p>
+              <%= time_ago_in_words crown.created_at %> ago
+            </p>
           </li>
         <% end %>
       <% else %>

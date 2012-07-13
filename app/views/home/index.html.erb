@@ -7,26 +7,36 @@
 <hr class="soften">
 
 <div class="marketing row">
-  <section role="standings" class="span6">
-    <h2><i class="icon-globe icon-large"></i> Global Standings</h2>
+  <section class="standings span6">
     <% if current_shop %>
+      <h2><i class="icon-globe icon-large"></i> Country Crown</h2>
+      <p>
+        This Crown is awarded to one shop per country, for fulfilling the most orders:
+      </p>
       <ul class="countries">
-        <% @countries.each do |country| %>
-          <%= content_tag_for :li, country, class: country.code do %>
-            <h3>
-              <%= country.name %>
-            </h3>
-            <ol>
-              <% country.crowns.order("created_at ASC").each do |crown| %>
-                <%= content_tag_for :li, crown do %>
-                  <%= link_to "#{crown.shop.name}", crown.shop %> <%= crown.reigns? ? "reigns" : "was usurped #{time_ago_in_words crown.lost_at} ago" %>.
+        <% if Crown.any? %>
+          <% @countries.each do |country| %>
+            <%= content_tag_for :li, country, class: country.code do %>
+              <h3>
+                <%= country.name %>
+              </h3>
+              <ol>
+                <% country.crowns.order("created_at ASC").each do |crown| %>
+                  <%= content_tag_for :li, crown do %>
+                    <%= link_to "#{crown.shop.name}", crown.shop %> <%= crown.reigns? ? "reigns " : "was usurped #{time_ago_in_words crown.lost_at} ago" %>.
+                  <% end %>
                 <% end %>
-              <% end %>
-            </ol>
+              </ol>
+            <% end %>
           <% end %>
+        <% else %>
+          <p>
+            We'll be awarding Crowns soon. Currently there are <%= Shop.count %> fighting for the thrones.
+          </p>
         <% end %>
       </ul>
     <% else %>
+      <h2><i class="icon-globe icon-large"></i> Global Standings</h2>
       <div class="signup">
         <div class="cta">
           <h2>Where do you stand?</h2>
@@ -36,23 +46,56 @@
     <% end %>
   </section>
   <div class="span6">
-    <section class="row">
-      <div class="span6">
-        <h2><i class="icon-trophy icon-large"></i> Crowns &amp; Trophies</h2>
-        <p>
-          Does your store have what it takes?
-          Prove it by gaining crowns and trophies.
-        </p>
-      </div>
-    </section>
-    <section class="row">
-      <div class="span6"> 
-        <h2><i class="icon-check icon-large"></i> Actionable statistics</h2>
-        <p>
-          Discover your strengths and weaknesses. 
-          Formulate real business strategies based on your and your competitors' statistics.
-        </p>
-      </div>
-    </section>
+    <% if current_shop %>    
+      <section class="row">
+        <div class="span6">
+          <h2><i class="icon-pushpin icon-large"></i> Hi <%= current_shop.name %>!</h2>
+          <p>
+            We run the fight for the Crowns every 12 hours. You're in the running now, so check back soon to see how you fared, and which shops have been crowned.
+          </p>
+        </div>
+      </section>
+      <section class="row">
+        <div class="span6">
+          <h2><i class="icon-trophy icon-large"></i> Win right now!</h2>
+          <p>
+            You can go in the draw to win a <strong>Twitter Trophy</strong> by 
+            <a href="https://twitter.com/intent/tweet?button_hashtag=statisfy&text=We're%20fighting%20it%20out%20against%20other%20%40Shopify%20stores%20to%20be%20crowned%20on%20%40Statisfy" class="twitter-hashtag-button" data-size="large" data-related="statisfy,nickmalcolm" data-url="http://statisfy.me">tweeting #statisfy</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+          </p>
+        </div>
+      </section>
+      <section class="row">
+        <div class="span6">
+          <h2><i class="icon-share icon-large"></i> What next?</h2>
+          <p>
+            We will be adding Crowns and Trophies as time goes on. Have any suggestions or other feedback? Get in touch:
+          </p>
+          <p>
+            <i class="icon-envelope-alt"></i> <%= mail_to "nick@statisfy.me" %>&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="icon-twitter"></i> <%= link_to "@statisfy", "http://twitter.com/statisfy" %>
+          </p>
+        </div>
+      </section>
+    <% else %>
+      <section class="row">
+        <div class="span6">
+          <h2><i class="icon-trophy icon-large"></i> Crowns &amp; Trophies</h2>
+          <p>
+            Does your store have what it takes?
+            Prove it by gaining crowns and trophies.
+          </p>
+        </div>
+      </section>
+      <section class="row">
+        <div class="span6"> 
+          <h2><i class="icon-check icon-large"></i> Actionable statistics</h2>
+          <p>
+            Discover your strengths and weaknesses. 
+            Formulate real business strategies based on your and your competitors' statistics.
+          </p>
+        </div>
+      </section>
+    <% end %>
   </div>
 </div>

@@ -3,7 +3,7 @@ class AwardCrowns
   
   def self.perform
     Country.all.each do |c|
-      c.find_ruler
+      Resque.enqueue(AwardCountryCrown, c.id)
     end
   end
   

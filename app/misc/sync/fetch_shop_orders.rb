@@ -49,9 +49,13 @@ module Sync
         order.shopify_id = shopify_order.id
         order.shop_id = shop_id
         
+        %w(total_price_usd total_price currency financial_status fulfillment_status).each do |attribute|
+          order.send "#{attribute}=", shopify_order.send(attribute)
+        end
+        
         if shopify_order.respond_to?(:shipping_address)
           address = shopify_order.shipping_address
-          order.country = Country.find_or_create_by_code(address.code, name: address.country)
+          order.country = Country.find_or_create_by_code(address.country_code, name: address.country)
         end
         
       end

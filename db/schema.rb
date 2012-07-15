@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120709114202) do
+ActiveRecord::Schema.define(:version => 20120715123252) do
 
   create_table "countries", :force => true do |t|
     t.string   "name"
@@ -36,10 +36,15 @@ ActiveRecord::Schema.define(:version => 20120709114202) do
 
   create_table "orders", :force => true do |t|
     t.integer  "shopify_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
     t.integer  "shop_id"
     t.integer  "country_id"
+    t.decimal  "total_price_usd",    :precision => 12, :scale => 2
+    t.decimal  "total_price",        :precision => 12, :scale => 2
+    t.string   "currency"
+    t.string   "financial_status"
+    t.string   "fulfillment_status"
   end
 
   add_index "orders", ["country_id"], :name => "index_orders_on_country_id"

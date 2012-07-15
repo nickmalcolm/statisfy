@@ -103,10 +103,9 @@ class FetchIngestShopOrdersTest < ActiveSupport::TestCase
     
     @mock_order = mock()
     @mock_order.stubs(:id).returns(1234)
-    @mock_shipping_address = mock()
-    @mock_shipping_address.stubs(:country_code).returns("NZ")
-    @mock_shipping_address.stubs(:country).returns("New Zealand")
-    @mock_order.stubs(:shipping_address).returns(@mock_shipping_address)
+    %w(respond_to? total_price_usd total_price financial_status fulfillment_status currency).each do |attribute|
+      @mock_order.send("stubs", attribute)
+    end
   end
   
   
@@ -121,6 +120,12 @@ class FetchIngestShopOrdersTest < ActiveSupport::TestCase
   end
   
   test "ingest associates with existing country" do
+    mock_shipping_address = mock()
+    mock_shipping_address.expects(:country_code).returns("NZ")
+    mock_shipping_address.expects(:country).returns("New Zealand")
+    @mock_order.stubs(:respond_to?).with(:shipping_address).returns(true)
+    @mock_order.stubs(:shipping_address).returns(mock_shipping_address)
+    
     nz = FactoryGirl.create(:country, name: "New Zealand", code: "NZ")
     
     assert_no_difference "Country.count" do
@@ -132,6 +137,12 @@ class FetchIngestShopOrdersTest < ActiveSupport::TestCase
   end
   
   test "ingest creates new non-existant country" do
+    mock_shipping_address = mock()
+    mock_shipping_address.expects(:country_code).returns("NZ")
+    mock_shipping_address.expects(:country).returns("New Zealand")
+    @mock_order.stubs(:respond_to?).with(:shipping_address).returns(true)
+    @mock_order.stubs(:shipping_address).returns(mock_shipping_address)
+    
     assert_difference "Country.count" do
       Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
     end
@@ -144,10 +155,35 @@ class FetchIngestShopOrdersTest < ActiveSupport::TestCase
   end
   
   test "ingest can handle no shipping address" do
-    @mock_order.stubs(:shipping_address).returns(nil)
+    @mock_order.expects(:respond_to?).with(:shipping_address).returns(false)
     Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
     order = Order.last
     assert_nil order.country
+  end
+  
+  test "can ingest prices" do
+    @mock_order.expects(:total_price_usd).returns("0.00")
+    @mock_order.expects(:total_price).returns("129.52")
+    @mock_order.expects(:currency).returns("USD")
+    Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
+    order = Order.last
+    assert_equal "0.00".to_d, order.total_price_usd
+    assert_equal "129.52".to_d, order.total_price
+    assert_equal "USD", order.currency
+  end
+  
+  test "can ingest financial_status" do
+    @mock_order.expects(:financial_status).returns("paid")
+    Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
+    order = Order.last
+    assert_equal "paid", order.financial_status
+  end
+  
+  test "can ingest fulfillment_status" do
+    @mock_order.expects(:fulfillment_status).returns("unshipped")
+    Sync::FetchShopOrders.ingest_order(@mock_order, @shop.id)
+    order = Order.last
+    assert_equal "unshipped", order.fulfillment_status
   end
   
 end

@@ -49,8 +49,9 @@ module Sync
         order.shopify_id = shopify_order.id
         order.shop_id = shop_id
         
-        if code = shopify_order.try(:shipping_address).try(:country_code)
-          order.country = Country.find_or_create_by_code(code, name: shopify_order.shipping_address.country)
+        if shopify_order.respond_to?(:shipping_address)
+          address = shopify_order.shipping_address
+          order.country = Country.find_or_create_by_code(address.code, name: address.country)
         end
         
       end

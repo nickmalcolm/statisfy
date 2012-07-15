@@ -1,11 +1,12 @@
 require 'test_helper'
 
-class AwardTest < ActiveSupport::TestCase
+class AwardCrownsTest < ActiveSupport::TestCase
   
   test "perform calls every shop" do
     (shop1 = mock()).expects(:id).once
     (shop2 = mock()).expects(:id).once
     Shop.expects(:all).returns([shop1, shop2])
+    Resque.stubs(:enqueue)
     AwardCrowns.perform()
   end
   
@@ -24,6 +25,7 @@ class AwardTest < ActiveSupport::TestCase
     (country1 = mock()).expects(:id).once
     (country2 = mock()).expects(:id).once
     Country.expects(:all).returns([country1, country2])
+    Resque.stubs(:enqueue)
     AwardCrowns.perform()
   end
   
